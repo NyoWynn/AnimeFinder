@@ -1,3 +1,6 @@
+
+https://animefind.xyz/
+
 • Frontend: HTML5, CSS3, JavaScript (ES6+)
 • API: Jikan API (MyAnimeList)
 • Estilos: CSS personalizado con CSS Grid y Flexbox
