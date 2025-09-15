@@ -305,11 +305,15 @@ showNotification(message, type = 'info', options = {}) {
     `;
 
     // Estilos para la notificación
+    const backgroundColor = type === 'error' ? 'var(--error-color)' : 
+                           type === 'success' ? 'var(--success-color)' : 
+                           type === 'info' ? 'var(--primary-color)' : 'var(--success-color)';
+    
     Object.assign(notification.style, {
         position: 'fixed',
         top: '20px',
         right: '20px',
-        background: type === 'error' ? 'var(--error-color)' : 'var(--success-color)',
+        background: backgroundColor,
         color: 'white',
         padding: '1rem 1.5rem',
         borderRadius: '10px',
@@ -319,10 +323,13 @@ showNotification(message, type = 'info', options = {}) {
         alignItems: 'center',
         gap: '0.5rem',
         animation: 'slideIn 0.3s ease-out',
-        cursor: 'pointer' 
+        cursor: 'pointer',
+        transition: 'all 0.3s ease',
+        maxWidth: '400px',
+        wordWrap: 'break-word'
     });
 
- 
+    // Hacer clickeable
     notification.addEventListener('click', () => {
         // Ocultar con animación
         notification.style.animation = 'fadeOut 0.3s ease-out forwards';
@@ -330,10 +337,21 @@ showNotification(message, type = 'info', options = {}) {
             notification.remove();
         });
 
-     
+        // Si es una notificación de recomendación, hacer scroll a los resultados
         if (options.isRecommendation) {
             elements.searchResults.scrollIntoView({ behavior: 'smooth' });
         }
+    });
+
+    // Efecto hover
+    notification.addEventListener('mouseenter', () => {
+        notification.style.transform = 'scale(1.05)';
+        notification.style.boxShadow = '0 15px 25px -5px rgba(0, 0, 0, 0.2)';
+    });
+
+    notification.addEventListener('mouseleave', () => {
+        notification.style.transform = 'scale(1)';
+        notification.style.boxShadow = 'var(--shadow-lg)';
     });
 
     document.body.appendChild(notification);
