@@ -1167,6 +1167,7 @@ document.addEventListener('DOMContentLoaded', function() {
         favoritesSystem.showFavorites();
     });
 
+
     // Event listeners para el selector de idioma
     elements.languageBtn.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -1199,23 +1200,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Event delegation para tarjetas de anime
     document.addEventListener('click', (e) => {
-        const animeCard = e.target.closest('.anime-card');
-        if (animeCard) {
-            const animeId = animeCard.dataset.animeId;
-            renderer.renderAnimeModal(animeId);
-        }
-
-        const recommendBtn = e.target.closest('.recommend-btn');
-        if (recommendBtn) {
-            e.stopPropagation(); // Evitar que se abra el modal
-            const animeId = recommendBtn.dataset.animeId;
-            const animeTitle = recommendBtn.dataset.animeTitle;
-            renderer.showAnimeRecommendations(animeId, animeTitle);
-        }
-
+        // Manejar botón de favoritos PRIMERO
         const favoriteBtn = e.target.closest('.favorite-btn');
         if (favoriteBtn) {
-            e.stopPropagation(); // Evitar que se abra el modal
+            e.preventDefault();
+            e.stopPropagation();
             const animeId = parseInt(favoriteBtn.dataset.animeId);
             const animeTitle = favoriteBtn.dataset.animeTitle;
             
@@ -1231,8 +1220,29 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Actualizar el estado visual del botón
             favoriteBtn.classList.toggle('favorited');
+            return; // Salir temprano para evitar otros handlers
         }
 
+        // Manejar botón de recomendaciones
+        const recommendBtn = e.target.closest('.recommend-btn');
+        if (recommendBtn) {
+            e.preventDefault();
+            e.stopPropagation();
+            const animeId = recommendBtn.dataset.animeId;
+            const animeTitle = recommendBtn.dataset.animeTitle;
+            renderer.showAnimeRecommendations(animeId, animeTitle);
+            return; // Salir temprano para evitar otros handlers
+        }
+
+        // Manejar clic en tarjeta de anime (solo si no es un botón)
+        const animeCard = e.target.closest('.anime-card');
+        if (animeCard && !e.target.closest('button')) {
+            const animeId = animeCard.dataset.animeId;
+            renderer.renderAnimeModal(animeId);
+            return;
+        }
+
+        // Manejar sugerencias de búsqueda
         const suggestionItem = e.target.closest('.suggestion-item');
         if (suggestionItem) {
             const animeId = suggestionItem.dataset.animeId;
