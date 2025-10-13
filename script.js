@@ -277,10 +277,8 @@ const favoritesSystem = {
     loadFavorites() {
         try {
             const savedFavorites = localStorage.getItem('animeFinderFavorites');
-            console.log('Favoritos cargados desde localStorage:', savedFavorites);
             if (savedFavorites) {
                 favorites = JSON.parse(savedFavorites);
-                console.log('Favoritos parseados:', favorites);
             }
             this.updateFavoritesCount();
             this.updateFavoritesDisplay();
@@ -293,10 +291,7 @@ const favoritesSystem = {
     // Guardar favoritos en localStorage
     saveFavorites() {
         try {
-            const favoritesToSave = JSON.stringify(favorites);
-            console.log('Guardando favoritos:', favoritesToSave);
-            localStorage.setItem('animeFinderFavorites', favoritesToSave);
-            console.log('Favoritos guardados correctamente');
+            localStorage.setItem('animeFinderFavorites', JSON.stringify(favorites));
         } catch (error) {
             console.error('Error saving favorites:', error);
         }
@@ -304,16 +299,12 @@ const favoritesSystem = {
 
     // Añadir anime a favoritos
     addToFavorites(anime) {
-        console.log('Intentando añadir a favoritos:', anime.title, anime.mal_id);
         if (!this.isFavorite(anime.mal_id)) {
             favorites.push(anime);
-            console.log('Anime añadido al array:', favorites.length);
             this.saveFavorites();
             this.updateFavoritesCount();
             this.updateFavoritesDisplay();
             utils.showNotification(`${anime.title} añadido a favoritos`, 'success');
-        } else {
-            console.log('Anime ya está en favoritos');
         }
     },
 
@@ -1140,13 +1131,10 @@ const eventHandlers = {
 
 // Inicialización
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('DOM cargado, inicializando sistemas...');
-    
     // Inicializar sistema de internacionalización
     i18n.init();
     
     // Inicializar sistema de favoritos
-    console.log('Inicializando sistema de favoritos...');
     favoritesSystem.loadFavorites();
     
     // Event listeners
@@ -1226,14 +1214,9 @@ document.addEventListener('DOMContentLoaded', function() {
             const animeId = parseInt(favoriteBtn.dataset.animeId);
             const animeTitle = favoriteBtn.dataset.animeTitle;
             
-            console.log('Botón de favoritos clickeado:', animeId, animeTitle);
-            console.log('¿Es favorito?', favoritesSystem.isFavorite(animeId));
-            
             if (favoritesSystem.isFavorite(animeId)) {
-                console.log('Eliminando de favoritos');
                 favoritesSystem.removeFromFavorites(animeId);
             } else {
-                console.log('Añadiendo a favoritos');
                 // Buscar el anime en el cache primero
                 let anime = allAnimesCache.get(animeId);
                 
@@ -1242,11 +1225,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     anime = [...currentSearchResults, ...currentRecommendations, ...favorites].find(a => a.mal_id === animeId);
                 }
                 
-                console.log('Anime encontrado:', anime);
                 if (anime) {
                     favoritesSystem.addToFavorites(anime);
-                } else {
-                    console.error('No se encontró el anime para añadir a favoritos');
                 }
             }
             
