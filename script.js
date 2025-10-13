@@ -248,6 +248,10 @@ const elements = {
     searchSuggestions: document.getElementById('searchSuggestions'),
     loading: document.getElementById('loading'),
     loadingText: document.getElementById('loadingText'),
+    cuteLoader: document.getElementById('cuteLoader'),
+    cuteLoadingText: document.getElementById('cuteLoadingText'),
+    cuteLoadingSubtext: document.getElementById('cuteLoadingSubtext'),
+    loadingGif: document.getElementById('loadingGif'),
     searchResults: document.getElementById('searchResults'),
     searchResultsTitle: document.getElementById('searchResultsTitle'),
     animeGrid: document.getElementById('animeGrid'),
@@ -270,6 +274,109 @@ const elements = {
     favoritesGrid: document.getElementById('favoritesGrid')
 };
 
+
+// Sistema de animación de carga
+const cuteLoader = {
+    gifs: [
+        'https://media.giphy.com/media/SFMhnJShQurlmi5StZ/giphy.gif',
+        'https://media.giphy.com/media/38QFGlkzPlGKYv1AOD/giphy.gif',
+        'https://media.giphy.com/media/NPj5Awodbah0CMgBTS/giphy.gif',
+        'https://media.giphy.com/media/OCOinFs9JkwoTDyHGI/giphy.gif',
+        'https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExb3Z1aDlleWtkM2UwNWc3dTRoY2cwdDRveXB5NzVrODl0OWtjNmVncyZlcD12MV9naWZzX3NlYXJjaCZjdD1n/fvoFmNuMsI29Rt2GGN/giphy.gif',
+        'https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExem4wcG92bWE4YjFzNXM3bmJheDl1ODdtaHJqejU5d2owMXR5eXU1MSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/rE7zjUvYt0SOiNqUSh/giphy.gif',
+         'https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExanZtN25oMWNrYzhsMTJubWEzNnk3MXJjMjRlbXNtZzNoMmVsZ2JweSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/8E004F9H0R93NXZKhD/giphy.gif',
+         'https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExNTZ4cDVyOGJudDFsc2x2bjZyMmJsNDFhcTUxc3c1Nm1ua3V0NnEwbCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/wZpt4EnQ5wUYj2gqfB/giphy.gif'
+
+       
+    ],
+    messages: [
+        'Buscando recomendaciones perfectas',
+        'Analizando tus gustos anime',
+        'Consultando con los expertos',
+        'Preparando sorpresas especiales',
+        'Explorando nuevos mundos anime'
+    ],
+    subMessages: [
+        '¡Nuestro asistente anime está trabajando duro!',
+        'Encontrando animes que te van a encantar',
+        'Revisando miles de opciones para ti',
+        'Nuestras monas chinas estan laburando',	
+        'Preparando la mejor selección',
+        '¡Casi listo con tus recomendaciones!'
+    ],
+
+    show() {
+        console.log('🎬 Iniciando animación de carga con GIFs...');
+        elements.loading.style.display = 'none';
+        elements.cuteLoader.style.display = 'flex';
+        this.updateGif();
+        this.updateMessage();
+        this.startMessageRotation();
+        this.scrollToLoader();
+    },
+
+    scrollToLoader() {
+        // Scroll suave hacia la animación de carga
+        elements.cuteLoader.scrollIntoView({
+            behavior: 'smooth',
+            block: 'center'
+        });
+    },
+
+    hide() {
+        console.log('🛑 Deteniendo animación de carga...');
+        elements.cuteLoader.style.display = 'none';
+        elements.loading.style.display = 'none';
+        this.stopMessageRotation();
+    },
+
+    updateGif() {
+        const randomIndex = Math.floor(Math.random() * this.gifs.length);
+        const newGifSrc = this.gifs[randomIndex];
+        
+        console.log(`🔄 Intentando cargar GIF ${randomIndex + 1}/${this.gifs.length}:`, newGifSrc);
+        
+        // Crear una nueva imagen para verificar si carga
+        const testImg = new Image();
+        testImg.onload = () => {
+            console.log(`✅ GIF cargado exitosamente:`, newGifSrc);
+            elements.loadingGif.src = newGifSrc;
+        };
+        testImg.onerror = () => {
+            console.log(`❌ GIF falló al cargar:`, newGifSrc);
+            // Si falla, usar el siguiente GIF
+            const nextIndex = (randomIndex + 1) % this.gifs.length;
+            const fallbackGif = this.gifs[nextIndex];
+            console.log(`🔄 Usando GIF de respaldo ${nextIndex + 1}:`, fallbackGif);
+            elements.loadingGif.src = fallbackGif;
+        };
+        testImg.src = newGifSrc;
+    },
+
+    updateMessage() {
+        const randomIndex = Math.floor(Math.random() * this.messages.length);
+        elements.cuteLoadingText.innerHTML = `${this.messages[randomIndex]}<span class="loading-dots">...</span>`;
+        elements.cuteLoadingSubtext.textContent = this.subMessages[randomIndex];
+    },
+
+    messageInterval: null,
+
+    startMessageRotation() {
+        console.log('⏰ Iniciando rotación de mensajes y GIFs cada 3 segundos...');
+        this.messageInterval = setInterval(() => {
+            console.log('🔄 Rotando mensaje y GIF...');
+            this.updateMessage();
+            this.updateGif(); // Cambiar GIF cada vez que cambie el mensaje
+        }, 3000);
+    },
+
+    stopMessageRotation() {
+        if (this.messageInterval) {
+            clearInterval(this.messageInterval);
+            this.messageInterval = null;
+        }
+    }
+};
 
 // Sistema de Favoritos
 const favoritesSystem = {
@@ -497,13 +604,47 @@ const translationService = {
     }
 };
 
+// Rate Limiting
+const rateLimiter = {
+    requests: [],
+    maxRequests: 3, // Máximo 3 requests por segundo
+    windowMs: 1000, // Ventana de 1 segundo
+    
+    async waitIfNeeded() {
+        const now = Date.now();
+        // Limpiar requests antiguos
+        this.requests = this.requests.filter(time => now - time < this.windowMs);
+        
+        // Si hemos alcanzado el límite, esperar
+        if (this.requests.length >= this.maxRequests) {
+            const oldestRequest = Math.min(...this.requests);
+            const waitTime = this.windowMs - (now - oldestRequest);
+            if (waitTime > 0) {
+                console.log(`Rate limit reached, waiting ${waitTime}ms`);
+                await new Promise(resolve => setTimeout(resolve, waitTime));
+            }
+        }
+        
+        // Registrar este request
+        this.requests.push(now);
+    }
+};
+
 // API Service
 const apiService = {
     // Buscar animes
     async searchAnime(query, limit = 20) {
         try {
+            await rateLimiter.waitIfNeeded();
             const response = await fetch(`${JIKAN_API_BASE}/anime?q=${encodeURIComponent(query)}&limit=${limit}&sfw=true`);
-            if (!response.ok) throw new Error('Error en la búsqueda');
+            if (!response.ok) {
+                if (response.status === 429) {
+                    console.log('Rate limit hit, waiting 2 seconds...');
+                    await new Promise(resolve => setTimeout(resolve, 2000));
+                    return this.searchAnime(query, limit); // Retry
+                }
+                throw new Error('Error en la búsqueda');
+            }
             return await response.json();
         } catch (error) {
             console.error('Error searching anime:', error);
@@ -514,8 +655,16 @@ const apiService = {
     // Obtener detalles de un anime
     async getAnimeDetails(id) {
         try {
+            await rateLimiter.waitIfNeeded();
             const response = await fetch(`${JIKAN_API_BASE}/anime/${id}`);
-            if (!response.ok) throw new Error('Error obteniendo detalles');
+            if (!response.ok) {
+                if (response.status === 429) {
+                    console.log('Rate limit hit, waiting 2 seconds...');
+                    await new Promise(resolve => setTimeout(resolve, 2000));
+                    return this.getAnimeDetails(id); // Retry
+                }
+                throw new Error('Error obteniendo detalles');
+            }
             return await response.json();
         } catch (error) {
             console.error('Error getting anime details:', error);
@@ -526,8 +675,16 @@ const apiService = {
     // Obtener animes por género
     async getAnimeByGenre(genreId, limit = 20) {
         try {
+            await rateLimiter.waitIfNeeded();
             const response = await fetch(`${JIKAN_API_BASE}/anime?genres=${genreId}&limit=${limit}&sfw=true&order_by=score&sort=desc`);
-            if (!response.ok) throw new Error('Error obteniendo animes por género');
+            if (!response.ok) {
+                if (response.status === 429) {
+                    console.log('Rate limit hit, waiting 2 seconds...');
+                    await new Promise(resolve => setTimeout(resolve, 2000));
+                    return this.getAnimeByGenre(genreId, limit); // Retry
+                }
+                throw new Error('Error obteniendo animes por género');
+            }
             return await response.json();
         } catch (error) {
             console.error('Error getting anime by genre:', error);
@@ -538,8 +695,16 @@ const apiService = {
     // Obtener animes populares
     async getTopAnime(limit = 20) {
         try {
+            await rateLimiter.waitIfNeeded();
             const response = await fetch(`${JIKAN_API_BASE}/top/anime?limit=${limit}&sfw=true`);
-            if (!response.ok) throw new Error('Error obteniendo animes populares');
+            if (!response.ok) {
+                if (response.status === 429) {
+                    console.log('Rate limit hit, waiting 2 seconds...');
+                    await new Promise(resolve => setTimeout(resolve, 2000));
+                    return this.getTopAnime(limit); // Retry
+                }
+                throw new Error('Error obteniendo animes populares');
+            }
             return await response.json();
         } catch (error) {
             console.error('Error getting top anime:', error);
@@ -599,15 +764,21 @@ const recommendationSystem = {
     async generateRecommendationsFromAnime(anime) {
         if (!anime || !anime.genres || anime.genres.length === 0) {
             console.log(`No genres found for anime ${anime?.mal_id || 'unknown'}`);
-            return [];
+            return this.getFallbackRecommendations();
         }
 
         const recommendations = new Map();
-        const animeGenres = anime.genres.slice(0, 4); // Tomar los primeros 4 géneros
+        const animeGenres = anime.genres.slice(0, 3); // Reducir a 3 géneros para evitar rate limits
 
         for (const genre of animeGenres) {
             try {
-                const genreAnimes = await apiService.getAnimeByGenre(genre.id, 8);
+                // Validar que el genreId existe
+                if (!genre.id) {
+                    console.log(`Invalid genre ID for ${genre.name}`);
+                    continue;
+                }
+
+                const genreAnimes = await apiService.getAnimeByGenre(genre.id, 6); // Reducir límite
                 if (genreAnimes.data && genreAnimes.data.length > 0) {
                     genreAnimes.data.forEach(recommendedAnime => {
                         // Evitar el anime original y duplicados
@@ -620,43 +791,69 @@ const recommendationSystem = {
                 }
             } catch (error) {
                 console.error(`Error getting recommendations for genre ${genre.name}:`, error);
+                // Continuar con el siguiente género en lugar de fallar completamente
             }
         }
 
-        const result = Array.from(recommendations.values()).slice(0, 12);
+        const result = Array.from(recommendations.values()).slice(0, 8); // Reducir a 8 recomendaciones
         console.log(`Generated ${result.length} recommendations from genres`);
+        
+        // Si no hay suficientes recomendaciones, usar fallback
+        if (result.length < 4) {
+            console.log('Not enough recommendations, using fallback');
+            return this.getFallbackRecommendations();
+        }
+        
         return result;
+    },
+
+    // Recomendaciones de fallback cuando la API falla
+    async getFallbackRecommendations() {
+        try {
+            console.log('Using fallback recommendations');
+            const topAnime = await apiService.getTopAnime(8);
+            return topAnime.data || [];
+        } catch (error) {
+            console.error('Error getting fallback recommendations:', error);
+            return [];
+        }
     },
 
     // Obtener animes similares usando la API de recomendaciones de Jikan
     async getSimilarAnime(animeId) {
         try {
+            await rateLimiter.waitIfNeeded();
             const response = await fetch(`${JIKAN_API_BASE}/anime/${animeId}/recommendations`);
             if (!response.ok) {
+                if (response.status === 429) {
+                    console.log('Rate limit hit, waiting 2 seconds...');
+                    await new Promise(resolve => setTimeout(resolve, 2000));
+                    return this.getSimilarAnime(animeId); // Retry
+                }
                 console.log(`No recommendations found for anime ${animeId}`);
-                return [];
+                return this.getFallbackRecommendations();
             }
             const data = await response.json();
             
             if (!data.data || data.data.length === 0) {
                 console.log(`No recommendation data for anime ${animeId}`);
-                return [];
+                return this.getFallbackRecommendations();
             }
             
-            // Obtener detalles completos de cada anime recomendado
+            // Obtener detalles completos de cada anime recomendado (máximo 6 para evitar rate limits)
             const recommendations = [];
-            const animeIds = data.data.slice(0, 12)
+            const animeIds = data.data.slice(0, 6)
                 .map(rec => rec.entry?.mal_id)
                 .filter(id => id); // Filtrar IDs válidos
             
             if (animeIds.length === 0) {
                 console.log(`No valid anime IDs found for recommendations`);
-                return [];
+                return this.getFallbackRecommendations();
             }
             
-            // Obtener detalles de hasta 4 animes a la vez para evitar sobrecargar la API
-            for (let i = 0; i < animeIds.length; i += 4) {
-                const batch = animeIds.slice(i, i + 4);
+            // Obtener detalles de hasta 2 animes a la vez para evitar sobrecargar la API
+            for (let i = 0; i < animeIds.length; i += 2) {
+                const batch = animeIds.slice(i, i + 2);
                 const promises = batch.map(id => {
                     return apiService.getAnimeDetails(id).catch(error => {
                         console.log(`Failed to get details for anime ${id}:`, error.message);
@@ -676,10 +873,16 @@ const recommendationSystem = {
                 }
             }
             
+            // Si no hay suficientes recomendaciones, usar fallback
+            if (recommendations.length < 3) {
+                console.log('Not enough similar anime, using fallback');
+                return this.getFallbackRecommendations();
+            }
+            
             return recommendations;
         } catch (error) {
             console.error('Error getting similar anime:', error);
-            return [];
+            return this.getFallbackRecommendations();
         }
     }
 };
@@ -947,7 +1150,7 @@ async renderAnimeModal(animeId) {
    // EN: renderer.showAnimeRecommendations
 async showAnimeRecommendations(animeId, animeTitle) {
     try {
-        elements.loading.classList.add('show');
+        cuteLoader.show();
         
         let anime = null;
         try {
@@ -956,13 +1159,13 @@ async showAnimeRecommendations(animeId, animeTitle) {
         } catch (error) {
             console.error('Error getting anime details:', error);
             utils.showNotification(i18n.t('errorAnimeDetails'), 'error'); // Usando i18n
-            elements.loading.classList.remove('show');
+            cuteLoader.hide();
             return;
         }
         
         if (!anime) {
             utils.showNotification(i18n.t('noAnimeInfo'), 'error'); // Usando i18n
-            elements.loading.classList.remove('show');
+            cuteLoader.hide();
             return;
         }
         
@@ -1023,9 +1226,9 @@ async showAnimeRecommendations(animeId, animeTitle) {
             utils.showNotification(i18n.t('noRecommendationsFound'), 'info');
         }
         
-        elements.loading.classList.remove('show');
+        cuteLoader.hide();
     } catch (error) {
-        elements.loading.classList.remove('show');
+        cuteLoader.hide();
         utils.showNotification(i18n.t('errorUnexpected'), 'error'); // Usando i18n
         console.error('Unexpected error getting anime recommendations:', error);
     }
