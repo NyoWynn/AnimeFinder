@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AnimeFinder - Descubre tu próximo anime favorito</title>
+    <link rel="icon" type="image/png" href="https://cdn.discordapp.com/attachments/1398918246702518373/1414001909810860206/image.png?ex=68bdfb66&is=68bca9e6&hm=0503f46c4068f6531133498152e7163cc3f360ce6d9171d0439bd8fb2b567d67&">
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1 class="logo clickable-logo" id="homeLogo">
+                    <div class="logo-text">AnimeFinder</div>
+                </h1>
+                <p class="tagline">Descubre tu próximo anime favorito</p>
+                
+                <!-- Header Actions -->
+                <div class="header-actions">
+                    <!-- Favorites Button -->
+                    <button class="favorites-btn" id="favoritesBtn">
+                        <i class="fas fa-heart"></i>
+                        <span class="favorites-count" id="favoritesCount">0</span>
+                    </button>
+                    
+                    <!-- Language Selector -->
+                    <div class="language-selector">
+                        <button class="language-btn" id="languageBtn">
+                            <i class="fas fa-globe"></i>
+                            <span id="currentLanguage">ES</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="language-dropdown" id="languageDropdown">
+                            <button class="language-option" data-lang="es">
+                                <span class="flag">🇪🇸</span>
+                                <span>Español</span>
+                            </button>
+                            <button class="language-option" data-lang="en">
+                                <span class="flag">🇺🇸</span>
+                                <span>English</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Search Section -->
+        <section class="search-section">
+            <div class="search-container">
+                <div class="search-box">
+                    <i class="fas fa-search search-icon"></i>
+                    <input 
+                        type="text" 
+                        id="animeSearch" 
+                        placeholder=""
+                        autocomplete="off"
+                    >
+                    <button id="searchBtn" class="search-btn">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </div>
+                <div class="search-suggestions" id="searchSuggestions"></div>
+            </div>
+        </section>
+
+        <!-- Loading Spinner -->
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p id="loadingText">Buscando animes...</p>
+        </div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Search Results -->
+            <section class="search-results" id="searchResults">
+                <h2 class="section-title" id="searchResultsTitle">Resultados de búsqueda</h2>
+                <div class="anime-grid" id="animeGrid"></div>
+            </section>
+
+            <!-- Recommendations -->
+            <section class="recommendations" id="recommendations">
+                <h2 class="section-title" id="recommendationsTitle">
+                    <i class="fas fa-magic"></i>
+                    Recomendaciones basadas en géneros
+                </h2>
+                <div class="anime-grid" id="recommendationsGrid"></div>
+            </section>
+
+            <!-- Favorites Section -->
+            <section class="favorites" id="favorites">
+                <h2 class="section-title" id="favoritesTitle">
+                    <i class="fas fa-heart"></i>
+                    Mis Favoritos
+                </h2>
+                <div class="anime-grid" id="favoritesGrid"></div>
+            </section>
+        </main>
+
+        <!-- Anime Modal -->
+        <div class="modal" id="animeModal">
+            <div class="modal-content">
+                <span class="close" id="closeModal">&times;</span>
+                <div class="modal-body" id="modalBody"></div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <p>&copy; 2024 AnimeFinder. Powered by <a href="https://jikan.moe/" target="_blank">Jikan API</a></p>
+                <div class="creator-info">
+                    <p class="creator-text" id="creatorText">Creado por <span class="creator-name">WynnDev</span></p>
+                    <div class="social-links">
+                        <a href="https://github.com/NyoWynn" target="_blank" class="social-link" title="GitHub">
+                            <i class="fab fa-github"></i>
+                        </a>
+                        <a href="https://www.instagram.com/wynn.js/" target="_blank" class="social-link" title="Instagram">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="https://www.linkedin.com/in/nicolascamposmaldonado/" target="_blank" class="social-link" title="LinkedIn">
+                            <i class="fab fa-linkedin"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
